@@ -8,6 +8,7 @@ import { RequireRole } from './RequireRole';
 import { Catalogo } from './Catalogo';
 import { Dashboard } from './Dashboard';
 import { AdminDemo } from './AdminDemo';
+import { Orders } from './Orders'; // <-- Importación agregada
 import './App.css';
 
 function Nav() {
@@ -42,6 +43,10 @@ function Nav() {
         <nav className="nav-links">
           <NavLink to="/" end className={linkClass}>
             Catálogo
+          </NavLink>
+          {/* <-- Nuevo enlace de Pedidos agregado aquí --> */}
+          <NavLink to="/orders" className={linkClass}>
+            Pedidos
           </NavLink>
           <NavLink to="/dashboard" className={linkClass}>
             Dashboard
@@ -87,6 +92,8 @@ export default function App() {
 
             {/* Guard de AUTENTICACIÓN: agrupa las rutas que exigen sesión */}
             <Route element={<RequireAuth />}>
+              {/* <-- Nueva ruta de Pedidos agregada aquí --> */}
+              <Route path="/orders" element={<Orders />} />
               <Route path="/dashboard" element={<Dashboard />} />
 
               {/* Guard de AUTORIZACIÓN anidado: además exige el rol Admin */}
