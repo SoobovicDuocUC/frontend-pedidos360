@@ -3,7 +3,7 @@
 // App.tsx) — este componente asume que ya hay sesión activa.
 import { useMsal } from '@azure/msal-react';
 import { TokenInspector } from './TokenInspector';
-import { Pokemones } from './Pokemones';
+import { Catalogo } from './Catalogo';
 
 export function Dashboard() {
   const { accounts } = useMsal();
@@ -32,7 +32,7 @@ export function Dashboard() {
       <hr style={{ margin: '1.5rem 0', borderColor: '#eee' }} />
       <TokenInspector />
       <hr style={{ margin: '1.5rem 0', borderColor: '#eee' }} />
-      <Pokemones />
+      <Catalogo />
     </div>
   );
 }

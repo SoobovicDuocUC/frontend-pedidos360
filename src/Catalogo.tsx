@@ -1,13 +1,11 @@
-// src/Pokemones.tsx
-// Consulta protegida real: GET /pokemones en el API Gateway (JWT authorizer).
 import { useState } from 'react';
 import { useApi } from './useApi';
-import { listPokemones, type Pokemon } from './api/pokemones';
+import { listCatalogo, type Producto } from './api/catalogo';
 import { ApiError } from './api/client';
 
-export function Pokemones() {
+export function Catalogo() {
   const api = useApi();
-  const [items, setItems] = useState<Pokemon[] | null>(null);
+  const [items, setItems] = useState<Producto[] | null>(null);
   const [raw, setRaw] = useState<unknown>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -22,13 +20,11 @@ export function Pokemones() {
     setItems(null);
     setRaw(null);
     try {
-      const data = await listPokemones(api);
+      const data = await listCatalogo(api);
       setItems(data);
       setRaw(data);
     } catch (err) {
       if (err instanceof ApiError) {
-        // 401 = token inválido/ausente para el authorizer
-        // 403 = token válido pero sin el scope/rol requerido en la Lambda
         setError(`API ${err.status} ${err.statusText} — ${JSON.stringify(err.body)}`);
       } else {
         setError(err instanceof Error ? err.message : 'Error desconocido');
@@ -40,14 +36,14 @@ export function Pokemones() {
 
   return (
     <div style={{ marginTop: '1.5rem', textAlign: 'left' }}>
-      <h3>Backend protegido — GET /pokemones</h3>
+      <h3>Backend protegido — GET /catalogo</h3>
       <p style={{ fontSize: '0.85rem', color: '#666', marginBottom: '1rem' }}>
-        Llama al API Gateway con el <code>Bearer</code> token (aud = tu API).
-        El authorizer valida firma, issuer, audience y expiración.
+        Llama al API Gateway con el <code>Bearer</code> token. 
+        El authorizer valida tu sesión y Lambda trae los datos de DynamoDB.
       </p>
 
       <button className="btn btn-login" onClick={handleLoad} disabled={loading}>
-        {loading ? 'Consultando...' : 'Listar Pokémones'}
+        {loading ? 'Consultando...' : 'Listar Catálogo'}
       </button>
 
       {error && (
@@ -59,8 +55,8 @@ export function Pokemones() {
       {items && items.length > 0 && (
         <ul style={{ marginTop: '1rem' }}>
           {items.map((p, i) => (
-            <li key={String(p.id ?? p.name ?? i)}>
-              {p.name ?? p.id ?? JSON.stringify(p)}
+            <li key={String(p.id ?? p.nombre ?? i)}>
+              <strong>{p.nombre ?? 'Sin nombre'}</strong> — ${p.precio ?? 0}
             </li>
           ))}
         </ul>
