@@ -1,16 +1,11 @@
 // src/App.tsx
-// Estructura de rutas + guards. Este es el archivo que muestra el concepto
-// "guard de ruta": RequireAuth agrupa TODAS las rutas que exigen sesión, y
-// RequireRole las que además exigen un App Role — se agregan más páginas
-// (orders, catalog, ...) anidándolas bajo el guard que corresponda, sin
-// repetir lógica de autenticación/autorización en cada una.
 import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom';
 import { useMsal, useIsAuthenticated } from '@azure/msal-react';
 import { InteractionStatus } from '@azure/msal-browser';
 import { loginRequest } from './authConfig';
 import { RequireAuth } from './RequireAuth';
 import { RequireRole } from './RequireRole';
-import { Landing } from './Landing';
+import { Catalogo } from './Catalogo';
 import { Dashboard } from './Dashboard';
 import { AdminDemo } from './AdminDemo';
 import './App.css';
@@ -39,17 +34,18 @@ function Nav() {
   return (
     <header className="navbar">
       <div className="logo">
-        ⚡ <span>Portal MiApp</span>
+        ⚡ <span>Pedidos360</span>
       </div>
 
+      {/* Menú de navegación principal visible al iniciar sesión */}
       {isAuthenticated && (
         <nav className="nav-links">
+          <NavLink to="/" end className={linkClass}>
+            Catálogo
+          </NavLink>
           <NavLink to="/dashboard" className={linkClass}>
             Dashboard
           </NavLink>
-          {/* Sin el App Role "Admin" asignado, RequireRole igual bloquea el
-              contenido — el link queda visible a propósito para poder
-              demostrar el guard de autorización en vivo. */}
           <NavLink to="/admin" className={linkClass}>
             Admin
           </NavLink>
@@ -86,8 +82,8 @@ export default function App() {
         <Nav />
         <main className="container">
           <Routes>
-            {/* Pública: no está bajo RequireAuth */}
-            <Route path="/" element={<Landing />} />
+            {/* Pública: ahora el Catálogo es la Landing Page oficial */}
+            <Route path="/" element={<Catalogo />} />
 
             {/* Guard de AUTENTICACIÓN: agrupa las rutas que exigen sesión */}
             <Route element={<RequireAuth />}>
@@ -99,7 +95,8 @@ export default function App() {
               </Route>
             </Route>
 
-            <Route path="*" element={<Landing />} />
+            {/* Cualquier ruta que no exista te devuelve al Catálogo */}
+            <Route path="*" element={<Catalogo />} />
           </Routes>
         </main>
       </div>
